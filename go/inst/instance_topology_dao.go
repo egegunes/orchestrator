@@ -223,7 +223,11 @@ func SetSemiSyncMaster(instanceKey *InstanceKey, enableMaster bool) (*Instance, 
 	if err != nil {
 		return instance, err
 	}
-	if _, err := ExecInstance(instanceKey, "set @@global.rpl_semi_sync_master_enabled=?", enableMaster); err != nil {
+	cmd := "set @@global.rpl_semi_sync_master_enabled=?"
+	if instance.IsMySQL80() && instance.PatchNumber() == "26" {
+		cmd = "set @@global.rpl_semi_sync_source_enabled=?"
+	}
+	if _, err := ExecInstance(instanceKey, cmd, enableMaster); err != nil {
 		return instance, log.Errore(err)
 	}
 	return ReadTopologyInstance(instanceKey)
@@ -237,7 +241,11 @@ func SetSemiSyncReplica(instanceKey *InstanceKey, enableReplica bool) (*Instance
 	if instance.SemiSyncReplicaEnabled == enableReplica {
 		return instance, nil
 	}
-	if _, err := ExecInstance(instanceKey, "set @@global.rpl_semi_sync_slave_enabled=?", enableReplica); err != nil {
+	cmd := "set @@global.rpl_semi_sync_slave_enabled=?"
+	if instance.IsMySQL80() && instance.PatchNumber() == "26" {
+		cmd = "set @@global.rpl_semi_sync_replica_enabled=?"
+	}
+	if _, err := ExecInstance(instanceKey, cmd, enableReplica); err != nil {
 		return instance, log.Errore(err)
 	}
 	if instance.ReplicationIOThreadRuning {

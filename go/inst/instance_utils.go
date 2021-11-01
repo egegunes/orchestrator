@@ -219,6 +219,18 @@ func MajorVersion(version string) []string {
 	return tokens[:2]
 }
 
+// PatchNumber returns a MySQL patch number (e.g. given "5.5.36" it returns "36")
+func PatchNumber(version string) string {
+	tokens := strings.Split(version, ".")
+	if len(tokens) < 3 {
+		return "0"
+	}
+
+	// Remove the build number
+	tokens = strings.Split(tokens[2], "-")
+	return tokens[0]
+}
+
 // IsSmallerMajorVersion tests two versions against another and returns true if
 // the former is a smaller "major" varsion than the latter.
 // e.g. 5.5.36 is NOT a smaller major version as comapred to 5.5.40, but IS as compared to 5.6.9

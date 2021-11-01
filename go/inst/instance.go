@@ -185,6 +185,11 @@ func (this *Instance) MajorVersion() []string {
 	return MajorVersion(this.Version)
 }
 
+// PatchNumber returns this instance's patch number (e.g. for 5.5.36 it returns "36")
+func (this *Instance) PatchNumber() string {
+	return PatchNumber(this.Version)
+}
+
 // MajorVersion returns this instance's major version number (e.g. for 5.5.36 it returns "5.5")
 func (this *Instance) MajorVersionString() string {
 	return strings.Join(this.MajorVersion(), ".")
